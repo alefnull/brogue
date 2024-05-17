@@ -1,12 +1,14 @@
 mod entities;
 mod state;
 mod util;
+mod camera;
 
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use bracket_lib::prelude::*;
 use entities::entity::EntityFuncs;
 use state::State;
+
 
 fn main() -> BError {
     let ratio = Point::new(16, 9);
@@ -29,7 +31,7 @@ fn main() -> BError {
     gs.map.generate(1);
 
     gs.player
-        .set_pos(gs.map.width as i32 / 2, gs.map.height as i32 / 2);
+        .set_pos(gs.map.cols as i32 / 2, gs.map.rows as i32 / 2);
 
     main_loop(context, gs)
 }

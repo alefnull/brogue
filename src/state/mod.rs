@@ -77,22 +77,20 @@ impl EntityFuncs for Cell {
 
 // MARK: {Map}
 pub struct Map {
-    pub width: u32,
-    pub height: u32,
+    pub cols: u32,
+    pub rows: u32,
     pub grid: Vec<Vec<Cell>>,
     pub seed: u64,
-    pub col_val: f32,
 }
 
 // MARK: impl {Map}
 impl Map {
-    pub fn new(width: u32, height: u32, seed: u64, col_val: f32) -> Self {
+    pub fn new(cols: u32, rows: u32, seed: u64) -> Self {
         Self {
-            width,
-            height,
+            cols,
+            rows,
             grid: Vec::new(),
             seed,
-            col_val,
         }
     }
 
@@ -112,18 +110,18 @@ impl Map {
         let mut cells = vec![
             vec![
                 Cell::new(0, 0, '█', RGB::named(WHITE), RGB::named(BLACK));
-                self.width as usize
+                self.cols as usize
             ];
-            self.height as usize
+            self.rows as usize
         ];
 
-        for x in 0..self.width {
-            for y in 0..self.height {
+        for x in 0..self.cols {
+            for y in 0..self.rows {
                 let mut fg_color;
                 let noise = noise.get_noise(x as f32 / 15.0, y as f32 / 15.0);
                 let noise = (noise + 1.0) / 2.0;
 
-                fg_color = RGB::from_u8(0, (noise * self.col_val) as u8, 0);
+                fg_color = RGB::from_u8(0, (noise * 255.0) as u8, 0);
                 fg_color = lerp_color(RGB::from_u8(0, 48, 255), fg_color, noise * 1.3, true);
 
                 if fg_color.g >= fg_color.b {
@@ -152,8 +150,8 @@ impl Map {
 
     // MARK: impl {Map} -> draw
     pub fn draw(&self, ctx: &mut BTerm) {
-        for x in 0..self.width {
-            for y in 0..self.height {
+        for x in 0..self.cols {
+            for y in 0..self.rows {
                 let cell = self.get_cell(x as i32, y as i32);
                 ctx.print_color(
                     x as i32,
@@ -169,20 +167,20 @@ impl Map {
 
 // MARK: {State}
 pub struct State {
-    pub(crate) width: u32,
-    pub(crate) height: u32,
+    pub(crate) cols: u32,
+    pub(crate) rows: u32,
     pub(crate) player: Player,
     pub(crate) map: Map,
 }
 
 // MARK: impl {State}
 impl State {
-    pub fn new(width: u32, height: u32, seed: u64) -> Self {
+    pub fn new(cols: u32, rows: u32, seed: u64) -> Self {
         Self {
-            width,
-            height,
+            cols,
+            rows,
             player: Player::new(),
-            map: Map::new(width, height, seed, 225.0),
+            map: Map::new(cols, rows, seed),
         }
     }
 
@@ -203,7 +201,7 @@ impl State {
 impl GameState for State {
     fn tick(&mut self, ctx: &mut BTerm) {
         ctx.cls();
-        let bounds = Point::new(self.width, self.height);
+        let bounds = Point::new(self.cols, self.rows);
 
         if let Some(key) = ctx.key {
             match key {
