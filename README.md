@@ -12,4 +12,4 @@ A small project created in Rust, emulating the terminal-look by rendering a grid
 - press `<space>` to generate a new background 'map'
 - press `Q` or `<escape>` to exit
 
-![BROGUE screenshot (May 16, 2024)](screenshot_2024_05_16.png)
+![BROGUE screenshot (May 16, 2024)](assets/screenshot_2024_05_16.png)
